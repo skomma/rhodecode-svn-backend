@@ -35,7 +35,8 @@ RUN useradd -u ${RHODECODE_USER_UID} -g ${RHODECODE_USER_GID} -m rhodecode
 # make a directory shared with rhodecode container
 RUN mkdir -p ${RHODECODE_SVN_SHARED_DIR}
 RUN touch ${RHODECODE_SVN_SHARED_DIR}/mod_dav_svn.conf
-RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR}
 
-# change apache environments
+# change running user/group of apache
 RUN sed -i -e 's/APACHE_RUN_USER=.*/APACHE_RUN_USER=rhodecode/g' -e 's/APACHE_RUN_GROUP=.*/APACHE_RUN_GROUP=rhodecode/g' /etc/apache2/envvars
+RUN mkdir -p /var/run/apache2 /var/lock/apache2
+RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR} /var/run/apache2 /var/lock/apache2 /var/log/apache2
