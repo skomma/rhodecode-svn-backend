@@ -14,7 +14,7 @@ RUN wget -q http://opensource.wandisco.com/wandisco-debian.gpg -O- | apt-key add
 # install apache2/dav_svn
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    apache2 libapache2-mod-svn \
+    apache2 libapache2-svn \
  && rm -rf /var/lib/apt/lists/*
 
 # enable required Apache modules as Rhodecode SVN backend
