@@ -1,10 +1,15 @@
 FROM ubuntu:16.04
 
+ARG RHODECODE_USER_UID=1000
+ARG RHODECODE_USER_GID=1000
+
+ENV RHODECODE_SVN_SHARED_DIR=/home/rhodecode/shared
+
 # upgrade & install wget
 RUN apt-get update \
  && apt-get -y upgrade \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    lsb-release wget \
+    lsb-release wget supervisor \
  && rm -rf /var/lib/apt/lists/*
 
 # add subversion repository
@@ -19,3 +24,18 @@ RUN apt-get update \
 
 # enable required Apache modules as Rhodecode SVN backend
 RUN a2enmod dav_svn headers authn_anon
+
+# place backend server configuration
+COPY 000-default.conf /etc/apache2/sites-available/
+
+# create rhodecode user/group
+RUN groupadd -g ${RHODECODE_USER_GID} rhodecode
+RUN useradd -u ${RHODECODE_USER_UID} -g ${RHODECODE_USER_GID} -m rhodecode
+
+# make a directory shared with rhodecode container
+RUN mkdir -p ${RHODECODE_SVN_SHARED_DIR}
+RUN touch ${RHODECODE_SVN_SHARED_DIR}/mod_dav_svn.conf
+RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR}
+
+# change apache environments
+RUN sed -i -e 's/APACHE_RUN_USER=.*/APACHE_RUN_USER=rhodecode/g' -e 's/APACHE_RUN_GROUP=.*/APACHE_RUN_GROUP=rhodecode/g' /etc/apache2/envvars
