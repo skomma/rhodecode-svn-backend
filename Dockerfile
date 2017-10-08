@@ -38,5 +38,10 @@ RUN touch ${RHODECODE_SVN_SHARED_DIR}/mod_dav_svn.conf
 
 # change running user/group of apache
 RUN sed -i -e 's/APACHE_RUN_USER=.*/APACHE_RUN_USER=rhodecode/g' -e 's/APACHE_RUN_GROUP=.*/APACHE_RUN_GROUP=rhodecode/g' /etc/apache2/envvars
-RUN mkdir -p /var/run/apache2 /var/lock/apache2
-RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR} /var/run/apache2 /var/lock/apache2 /var/log/apache2
+RUN chown rhodecode:rhodecode /var/run /var/lock
+RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR} /var/log/apache2 /var/log/supervisor
+
+# setup rhodecode
+COPY apache2.conf /etc/supervisor/conf.d
+USER rhodecode
+CMD ["/usr/bin/supervisord"]
