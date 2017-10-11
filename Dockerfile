@@ -30,6 +30,10 @@ RUN sed -ie 's/Listen 80/Listen 8090/g' /etc/apache2/ports.conf
 RUN sed -ie 's/^ErrorLog.*/ErrorLog \/dev\/stderr/' /etc/apache2/apache2.conf
 COPY apache2/000-default.conf /etc/apache2/sites-available/
 
+# suppress AH00558 warning
+COPY apache2/fqdn.conf /etc/apache2/conf-available/
+RUN a2enconf fqdn
+
 # create rhodecode user/group
 RUN groupadd -g ${RHODECODE_USER_GID} rhodecode
 RUN useradd -u ${RHODECODE_USER_UID} -g ${RHODECODE_USER_GID} -m rhodecode
