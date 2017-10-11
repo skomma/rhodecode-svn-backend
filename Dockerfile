@@ -27,6 +27,7 @@ RUN a2enmod dav_svn headers authn_anon
 
 # place backend server configuration
 RUN sed -ie 's/Listen 80/Listen 8090/g' /etc/apache2/ports.conf
+RUN sed -ie 's/^ErrorLog.*/ErrorLog \/dev\/stderr/' /etc/apache2/apache2.conf
 COPY apache2/000-default.conf /etc/apache2/sites-available/
 
 # create rhodecode user/group
