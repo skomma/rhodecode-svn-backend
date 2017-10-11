@@ -43,7 +43,9 @@ RUN mkdir -p /var/lock/apache2 /var/run/apache2
 RUN chown rhodecode:rhodecode /var/run /var/run/apache2 /var/lock/apache2
 RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR} /var/log/apache2 /var/log/supervisor
 
-# setup rhodecode
+# place supervisor configurations
 COPY supervisor/*.conf /etc/supervisor/conf.d/
+
 USER rhodecode
+EXPOSE 8090
 CMD ["/usr/bin/supervisord"]
