@@ -26,6 +26,7 @@ RUN apt-get update \
 RUN a2enmod dav_svn headers authn_anon
 
 # place backend server configuration
+RUN sed -ie 's/Listen 80/Listen 8090/g' /etc/apache2/ports.conf
 COPY apache2/000-default.conf /etc/apache2/sites-available/
 
 # create rhodecode user/group
@@ -38,7 +39,8 @@ RUN touch ${RHODECODE_SVN_SHARED_DIR}/mod_dav_svn.conf
 
 # change running user/group of apache
 RUN sed -i -e 's/APACHE_RUN_USER=.*/APACHE_RUN_USER=rhodecode/g' -e 's/APACHE_RUN_GROUP=.*/APACHE_RUN_GROUP=rhodecode/g' /etc/apache2/envvars
-RUN chown rhodecode:rhodecode /var/run /var/lock
+RUN mkdir -p /var/lock/apache2 /var/run/apache2
+RUN chown rhodecode:rhodecode /var/run /var/run/apache2 /var/lock/apache2
 RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR} /var/log/apache2 /var/log/supervisor
 
 # setup rhodecode
