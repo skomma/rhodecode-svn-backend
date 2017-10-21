@@ -51,6 +51,8 @@ RUN chown -R rhodecode:rhodecode ${RHODECODE_SVN_SHARED_DIR} /var/log/apache2 /v
 
 # place supervisor configurations
 COPY supervisor/*.conf /etc/supervisor/conf.d/
+COPY watch-apache2-conf.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/watch-apache2-conf.sh
 
 USER rhodecode
 EXPOSE 8090
