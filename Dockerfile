@@ -4,12 +4,13 @@ ARG RHODECODE_USER_UID=1000
 ARG RHODECODE_USER_GID=1000
 
 ENV RHODECODE_SVN_SHARED_DIR=/home/rhodecode/shared
+ENV DAV_SVN_CONF_PATH=${RHODECODE_SVN_SHARED_DIR}/mod_dav_svn.conf
 
 # upgrade & install wget
 RUN apt-get update \
  && apt-get -y upgrade \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    lsb-release wget supervisor \
+    lsb-release wget supervisor inotify-tools \
  && rm -rf /var/lib/apt/lists/*
 
 # add subversion repository
